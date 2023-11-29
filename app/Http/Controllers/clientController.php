@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Client;
+use DB;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -13,17 +16,10 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $clients = DB::table('clients')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json(['clients' => $clients], 200);
     }
 
     /**
@@ -34,7 +30,37 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'id_number' => 'required|numeric|unique:clients',
+            'uuid' => 'unique:clients',
+            'date_of_birth' => 'required|max:100',
+            'first_name' => 'required|min:3|max:100|string',
+            'last_name' => 'required|min:3|max:100|string',
+            'email' => 'required|email|unique:clients|unique:users',
+            'telephone' => 'required|numeric|unique:clients',
+            'status' => 'required'
+        ]);
+        // gets values from user input
+        $id_number = $request->input('id_number');
+        $date_of_birth = $request->input('date_of_birth');
+        $first_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
+        $email = $request->input('email');
+        $telephone = $request->input('telephone');
+        $status = $request->input('status');
+        // saves data to the database
+        $client = DB::table('clients')->insert([
+            'id_number' => $id_number,
+            'uuid' => Str::orderedUuid(),
+            'date_of_birth' => $date_of_birth,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email,
+            'telephone' => $telephone,
+            'status' => $status
+        ]);
+
+        return response()->json(['client' => $client], 201);
     }
 
     /**
@@ -44,17 +70,6 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

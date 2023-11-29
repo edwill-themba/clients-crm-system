@@ -20,13 +20,16 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:3|max:78'
         ]);
+        // gets input fields
+        $email = $request->input('email');
+        $password = $request->input('password');
         // checks if user is logged in with valid credentials
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = User::where('email', $request->email)->first();
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            $user = User::where('email', $email)->first();
             $token = $user->createToken('login_token')->plainTextToken;
             return response()->json([['user' => $user], ['token' => $token]], 200);
         } else {
-            return response()->json(['message' => 'unAhtorized'], 401);
+            return response()->json(['message' => 'unAuthorized, invalid email or password'], 401);
         }
     }
     /**
@@ -34,7 +37,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        \DB::table('personal_access_tokens')->delete();
         return response()->json(['message' => 'user successfully logged out'], 200);
     }
 }

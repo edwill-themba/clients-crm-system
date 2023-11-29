@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
         'id_number',
         'date_of_birth',
         'first_name',
@@ -22,8 +24,5 @@ class Client extends Model
         'telephone',
         'status'
     ];
-    /**
-     * Sets the timestamps to false
-     */
-    public $timestamp = false;
+
 }
