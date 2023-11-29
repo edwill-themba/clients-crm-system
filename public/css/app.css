@@ -24,3 +24,21 @@
 .content {
     flex: 1;
 }
+
+.client-item {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.client-item li span {
+    margin: auto 10px;
+    color: #04abc1;
+    width: 200px;
+}
+
+.client-item li {
+    list-style: none;
+    color: #f1ba50;
+}

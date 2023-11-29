@@ -42,6 +42,7 @@ export default {
         const response = await this.$store.dispatch("login", this.input);
         console.log(response);
         this.getUser();
+        this.$router.push({ path: "/clients" });
       } catch (error) {
         console.log(error);
         this.severErrors = error.response.data.errors;

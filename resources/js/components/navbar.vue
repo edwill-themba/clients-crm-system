@@ -7,12 +7,15 @@
               <li v-if="!isLoggedIn">
                 <router-link to="/">Admin Login</router-link>
               </li> 
-               <li v-if="isLoggedIn">
-                <router-link to="/logout">Log Out</router-link>
+              <li v-if="isLoggedIn">
+                <router-link to="/clients">View Clients</router-link>
               </li> 
-               <li v-if="isLoggedIn">
+                <li v-if="isLoggedIn">
                 <router-link to="#" style="color: #f1ba50;">{{ isCurrentUser }}</router-link>
               </li> 
+              <li v-if="isLoggedIn">
+                <router-link to="/logout">Log Out</router-link>
+              </li>
             </ul>
          </div>
        </nav>
