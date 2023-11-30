@@ -13,6 +13,7 @@
            <navbar />
          </div>
       </div>
+      <div id="add-client"></div>
       <!-- load application js script -->
       <script src="{{ asset('js/app.js') }}"></script>
     </body>

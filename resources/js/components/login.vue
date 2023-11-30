@@ -94,7 +94,6 @@ export default {
   font-size: 17px;
 }
 .input {
-  background: #000000;
   color: #04abc1;
   border: 1px solid #04abc1;
   margin-bottom: 10px;
