@@ -30,5 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('client/{id}', [ClientController::class, 'show']);
     Route::patch('client/{id}', [ClientController::class, 'update']);
     Route::delete('client/{id}', [ClientController::class, 'destroy']);
+    Route::post('client_search', [ClientController::class, 'filter']);
 });
 

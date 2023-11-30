@@ -182,4 +182,28 @@ class ClientController extends Controller
         }
         return response()->json(['message' => 'cliet successfully deleted'], 200);
     }
+
+    /**
+     * Filter the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function filter(Request $request)
+    {
+        if (Auth::check()) {
+            $filter = $request->input('filter');
+            $results = DB::table('clients')
+                ->where('first_name', '=', $filter)
+                ->orWhere('last_name', '=', $filter)
+                ->orWhere('email', '=', $filter)
+                ->first();
+        } else {
+            return response()->json(['message' => 'you are unAthorized to perform this operation'], 401);
+        }
+        if (empty($results)) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+        return response()->json(['results' => $results], 200);
+    }
 }
