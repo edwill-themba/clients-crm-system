@@ -29,7 +29,7 @@
                  <button class="btn-add" @click="showModal()">Add Client</button>
               </div>
               <div class="panel-body">
-                  <clientLists v-bind:clients="clients" />
+                  <clientLists v-bind:clients="clients" v-on:editClient="editClient($event)" />
                </div>
             </div>
          </div>
@@ -43,7 +43,7 @@
      <teleport to="#add-client">
        <div v-if="add_modal" class="modal-page">
          <div class="modal-form">
-            <h6>Add New Client</h6>
+            <h6>Add Update Client</h6>
             <form @submit="createEditClient">
             <div class="form-group">
               <input type="text" name="id_number" v-model="input.id_number" class="form-control input" placeholder="enter id number">
@@ -77,7 +77,7 @@
               </select>
                <span style="color:#000000">{{ inputErrors.status }}</span>
             </div>
-             <button type="submit" class="btn">add client</button>
+             <button type="submit" class="btn">save</button>
              <button type="button" @click="hideModal()" class="btn">close modal</button>
             </form>
          </div>
@@ -152,6 +152,12 @@ export default {
         console.log(error);
       }
     },
+    // edit client
+    editClient(client) {
+      this.edit = true;
+      this.input = client;
+      this.add_modal = true;
+    },
     // show modal form
     showModal() {
       this.add_modal = true;
@@ -186,7 +192,20 @@ export default {
           this.add_modal = false;
         }
       } else {
-        alert("edit");
+        // edit client
+        try {
+          const response = await this.$store.dispatch(
+            "updateClientData",
+            this.input
+          );
+          console.log(response);
+          this.add_modal = false;
+        } catch (error) {
+          this.severErrors = error.response.data.errors;
+          this.serverErrorMessages = error.response.data.message;
+          console.log(error);
+          this.add_modal = false;
+        }
       }
     },
     // validate input entered  by user

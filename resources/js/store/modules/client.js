@@ -63,7 +63,9 @@ export default {
          * @param {*} param0 
          * @param {*} input 
          */
-        addNewClient({ commit }, input) {
+        addNewClient({
+            commit
+        }, input) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('access_token');
             return new Promise((resolve, reject) => {
                 axios.post('api/client', {
@@ -84,5 +86,35 @@ export default {
                     })
             })
         },
+
+        /**
+         * Updates client data
+         * @param {*} param0 
+         * @param {*} input 
+         */
+        updateClientData({
+            commit
+        }, input) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('access_token');
+            return new Promise((resolve, reject) => {
+                axios.patch('api/client/' + input.id, {
+                        id_number: input.id_number,
+                        date_of_birth: input.date_of_birth,
+                        first_name: input.first_name,
+                        last_name: input.last_name,
+                        telephone: input.telephone,
+                        email: input.email,
+                        status: input.status
+                    })
+                    .then((response) => {
+                        // commit('updateClient', response.data.client)
+                        resolve(response);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            })
+
+        }
     }
 }

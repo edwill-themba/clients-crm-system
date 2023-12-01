@@ -109,13 +109,12 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'id_number' => 'required|numeric|unique:clients',
-            'uuid' => 'unique:clients',
+            'id_number' => 'required|numeric',
             'date_of_birth' => 'required|max:100|before:today',
             'first_name' => 'required|min:3|max:100|string',
             'last_name' => 'required|min:3|max:100|string',
-            'email' => 'required|email|unique:clients|unique:users',
-            'telephone' => 'required|numeric|unique:clients',
+            'email' => 'required|email',
+            'telephone' => 'required|numeric',
             'status' => 'required'
         ]);
         // check if user is logged in
@@ -148,6 +147,21 @@ class ClientController extends Controller
             if (!$isValid) {
                 return response()->json(['message' => 'the id number does not correspond with the date of birth'], 422);
             }
+            // checks that id does not belongs to another client
+            $check_id = (new InputValidator())->checkID($client->id_number);
+            if ($check_id != $id && $check_id != 0) {
+                return response()->json(['message' => 'the id number belongs to another client'], 422);
+            }
+            // checks that telephone does not belongs to another client
+            $check_id = (new InputValidator())->checkPhone($client->telephone);
+            if ($check_id != $id && $check_id != 0) {
+                return response()->json(['message' => 'the telephone number belongs to another client'], 422);
+            }
+            // checks that email does not belongs to another client
+            $check_id = (new InputValidator())->checkEmail($client->email);
+            if ($check_id != $id && $check_id != 0) {
+                return response()->json(['message' => 'the email address belongs to another client'], 422);
+            }
             // saves data to the database
             $client->save();
         } else {
@@ -155,6 +169,7 @@ class ClientController extends Controller
         }
 
         return response()->json(['client' => $client], 201);
+
     }
 
     /**
@@ -187,7 +202,7 @@ class ClientController extends Controller
             $results = DB::table('clients')
                 ->where('first_name', 'like', '%' . $filter . '%')
                 ->orWhere('last_name', 'like', '%' . $filter . '%')
-                ->orWhere('email', '=', $filter)
+                ->orWhere('email', 'like', '%' . $filter . '%')
                 ->orWhere('telephone', 'like', '%' . $filter . '%')
                 ->first();
         } else {

@@ -9,6 +9,8 @@
                 <th class="t-head">telephone no</th>
                 <th class="t-head">client email address</th>
                 <th class="t-head">client status</th>
+                <th class="t-head"></th>
+                <th class="t-head"></th>
               </tr>
               <tr  v-for="(client,index) in clients" :key="index">
                 <td class="t-col">{{ client.id_number }}</td>
@@ -17,6 +19,8 @@
                 <td class="t-col">{{ client.telephone }}</td>
                 <td class="t-col">{{ client.email }}</td>
                 <td class="t-col">{{ client.status }}</td>
+                <td class="t-col"><button class="edit" @click="editUser(client)">edit</button></td>
+                <td class="t-col"><button class="del">delete</button></td>
               </tr>
           </table>
         </div> 
@@ -26,7 +30,12 @@
 <script>
 export default {
   name: "clientList",
-  props: ["clients"]
+  props: ["clients"],
+  methods: {
+    editUser(client) {
+      this.$emit("editClient", client);
+    }
+  }
 };
 </script>
 
@@ -38,5 +47,21 @@ export default {
 .t-col {
   color: #04abc1;
   padding-left: 10px;
+}
+.t-col .edit {
+  color: #f1ba50;
+  height: 30px;
+  margin-left: 0px;
+  padding: 5px;
+  border-radius: 2px;
+  border: none;
+}
+.t-col .del {
+  color: #e1551c;
+  margin-left: 0px;
+  height: 30px;
+  padding: 5px;
+  border-radius: 2px;
+  border: none;
 }
 </style>

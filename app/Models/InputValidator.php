@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
+use DB;
 
 class InputValidator extends Model
 {
@@ -46,5 +47,59 @@ class InputValidator extends Model
         }
         return $isValid;
     }
+
+    /**
+     * checks if the id belongs to client
+     * @param id_number
+     */
+    public function checkID($id_number)
+    {
+        $id = DB::table('clients')
+            ->select('id')
+            ->where('id_number', '=', $id_number)
+            ->get();
+
+        if ($id == '[]') {
+            return 0;
+        } else {
+            return $id[0]->id;
+        }
+    }
+
+    /**
+     * checks if the telephone belongs to client
+     * @param id_number
+     */
+    public function checkPhone($telephone)
+    {
+        $id = DB::table('clients')
+            ->select('id')
+            ->where('telephone', '=', $telephone)
+            ->get();
+
+        if ($id == '[]') {
+            return 0;
+        } else {
+            return $id[0]->id;
+        }
+    }
+    /**
+     * checks if the email belongs to client
+     * @param id_number
+     */
+    public function checkEmail($email)
+    {
+        $id = DB::table('clients')
+            ->select('id')
+            ->where('email', '=', $email)
+            ->get();
+
+        if ($id == '[]') {
+            return 0;
+        } else {
+            return $id[0]->id;
+        }
+    }
+
 
 }
