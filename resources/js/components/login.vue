@@ -10,15 +10,25 @@
                <span style="color:#000000">{{ inputErrors.password }}</span>
                <button type="submit" class="btn btn-primary btn">login</button>
             </form>
-            <h4 v-if="severErrors">{{ severErrors }}</h4>
-            <h4 v-if="serverErrorMessages">{{ serverErrorMessages }}</h4>
+            <div v-if="severErrors">
+               <serverError  v-bind:serverErrors="severErrors" />
+            </div>
+            <div v-if="serverErrorMessages">
+               <serverMessage v-bind:serverErrorMessages="serverErrorMessages" /> 
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import serverError from "./error_message/sever_error.vue";
+import serverMessage from "./error_message/sever_error_message.vue";
 export default {
   name: "login",
+  components: {
+    serverError,
+    serverMessage
+  },
   data() {
     return {
       input: {

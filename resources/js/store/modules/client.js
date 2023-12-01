@@ -34,5 +34,26 @@ export default {
                     })
             })
         },
+        /**
+         * filters client details base on phone,email,
+         * @param {*} param0 
+         * @param {*} filter 
+         */
+        filterClient({
+            commit
+        }, filter) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('access_token');
+            return new Promise((resolve, reject) => {
+                axios.post('api/client_search', {
+                        filter: filter
+                    })
+                    .then((response) => {
+                        resolve(response);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            })
+        },
     }
 }

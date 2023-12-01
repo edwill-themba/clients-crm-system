@@ -194,9 +194,10 @@ class ClientController extends Controller
         if (Auth::check()) {
             $filter = $request->input('filter');
             $results = DB::table('clients')
-                ->where('first_name', '=', $filter)
-                ->orWhere('last_name', '=', $filter)
+                ->where('first_name', 'like', '%' . $filter . '%')
+                ->orWhere('last_name', 'like', '%' . $filter . '%')
                 ->orWhere('email', '=', $filter)
+                ->orWhere('telephone', 'like', '%' . $filter . '%')
                 ->first();
         } else {
             return response()->json(['message' => 'you are unAthorized to perform this operation'], 401);

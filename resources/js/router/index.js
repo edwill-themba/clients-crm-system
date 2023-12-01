@@ -14,12 +14,12 @@ const routes = [{
     {
         name: 'logout',
         path: '/logout',
-        component: logout
+        component: logout,
     },
     {
         name: 'clients',
         path: '/clients',
-        component: clients
+        component: clients,
     },
 ]
 
@@ -27,5 +27,7 @@ const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
 })
+
+
 
 export default router

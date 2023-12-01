@@ -5,33 +5,31 @@
        <!-- if there available clients -->
         <div v-if="clients">
            <div class="panel panel-default">
-             <div class="panel-heading client-header">
+              <div class="panel-heading">
+                <form class="frm-search" @submit="filterClient">
+                   <input type="search" name="filter" v-model="filter"  class="search-input" placeholder="enter client first name or last name or email or telephone" required>
+                   <button type="submit" class="btn">search</button>
+                </form>
+                <!-- search results -->
+                 <div v-if="search">
+                    <filterResults  v-bind:searchRes="searchRes" />
+                 </div>
+                <!-- end search results -->
+                <!-- server error message components -->
+                <div v-if="severErrors">
+                  <serverError  v-bind:serverErrors="severErrors" />
+                </div>
+                <div v-if="serverErrorMessages">
+                  <serverMessage v-bind:serverErrorMessages="serverErrorMessages" />
+                </div>
+                <!-- end server error messages -->
+              </div>
+              <div class="panel-heading client-header">
                  <h3>View Clients</h3>
                  <button class="btn-add" @click="showModal()">Add Client</button>
               </div>
               <div class="panel-body">
-                <div class="table-responsive">
-                 <table class="table table-bordered">
-                    <tr>
-                      <th class="t-head">client id</th>
-                      <th class="t-head">client id number</th>
-                      <th class="t-head">first name</th>
-                      <th class="t-head">last name</th>
-                      <th class="t-head">telephone no</th>
-                      <th class="t-head">client email address</th>
-                       <th class="t-head">client status</th>
-                    </tr>
-                    <tr  v-for="(client,index) in clients" :key="index">
-                      <td class="t-col">{{ client.id }}</td>
-                      <td class="t-col">{{ client.id_number }}</td>
-                      <td class="t-col">{{ client.first_name }}</td>
-                      <td class="t-col">{{ client.last_name }}</td>
-                      <td class="t-col">{{ client.telephone }}</td>
-                      <td class="t-col">{{ client.email }}</td>
-                      <td class="t-col">{{ client.status }}</td>
-                   </tr>
-                  </table>
-                </div>
+                  <clientLists v-bind:clients="clients" />
                </div>
             </div>
          </div>
@@ -41,6 +39,7 @@
          </div>
        </div>
      </div>
+     <!-- the add client teleport modal -->
      <teleport to="#add-client">
        <div v-if="add_modal" class="modal-page">
          <div class="modal-form">
@@ -84,13 +83,24 @@
          </div>
        </div> 
      </teleport>
+     <!-- end add client teleport -->
     </div>
 </template>
 
 <script>
+import clientLists from "./client_lists.vue";
+import filterResults from "./filter_results.vue";
+import serverError from "./error_message/sever_error.vue";
+import serverMessage from "./error_message/sever_error_message.vue";
+
 export default {
   name: "clients",
-
+  components: {
+    clientLists,
+    filterResults,
+    serverError,
+    serverMessage
+  },
   data() {
     return {
       add_modal: false,
@@ -111,7 +121,14 @@ export default {
         email: undefined,
         telephone: undefined,
         status: undefined
-      }
+      },
+      // filter
+      search: false,
+      filter: "",
+      searchRes: {},
+      // errors
+      severErrors: "",
+      serverErrorMessages: ""
     };
   },
   computed: {
@@ -132,9 +149,11 @@ export default {
         console.log(error);
       }
     },
+    // show modal form
     showModal() {
       this.add_modal = true;
     },
+    // close modal form
     hideModal() {
       this.add_modal = false;
     },
@@ -145,6 +164,7 @@ export default {
       if (Object.keys(this.inputErrors).length) return;
       alert("submit is clicked");
     },
+    // validate input entered  by user
     validateInputErrors(input) {
       const errors = {};
       if (!input.id_number) errors.id_number = "the id number is required";
@@ -156,12 +176,42 @@ export default {
       if (!input.email) errors.email = "the email is required";
       if (!input.telephone) errors.telephone = "the telephone is required";
       return errors;
+    },
+    // search user based on name or surname or email or telephone
+    async filterClient(e) {
+      e.preventDefault();
+      try {
+        const response = await this.$store.dispatch(
+          "filterClient",
+          this.filter
+        );
+        this.searchRes = response.data.results;
+        this.search = true;
+        console.log(response);
+      } catch (error) {
+        this.serverErrorMessages = error.response.data.message;
+        console.log(error);
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+.frm-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.frm-search .search-input {
+  width: 600px;
+  height: 40px;
+  border: none;
+  background: #f1ba50;
+  padding-left: 15px;
+  border-radius: 6px;
+}
+
 .clients {
   margin: 25px;
 }
@@ -192,14 +242,7 @@ h2 {
   color: #04abc1;
   text-align: center;
 }
-.t-head {
-  text-align: left;
-  color: #f1ba50;
-}
-.t-col {
-  color: #04abc1;
-  padding-left: 10px;
-}
+
 .modal-page {
   top: 0;
   left: 0;
