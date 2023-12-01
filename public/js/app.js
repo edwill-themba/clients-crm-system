@@ -21101,11 +21101,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.mjs");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.mjs");
 /* harmony import */ var _components_login__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/login */ "./resources/js/components/login.vue");
 /* harmony import */ var _components_logout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/logout */ "./resources/js/components/logout.vue");
 /* harmony import */ var _components_clients__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/clients */ "./resources/js/components/clients.vue");
+/* harmony import */ var _store_index__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/index */ "./resources/js/store/index.js");
 /* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
+
 
 
 
@@ -21117,15 +21119,34 @@ var routes = [{
 }, {
   name: 'logout',
   path: '/logout',
-  component: _components_logout__WEBPACK_IMPORTED_MODULE_1__["default"]
+  component: _components_logout__WEBPACK_IMPORTED_MODULE_1__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }, {
   name: 'clients',
   path: '/clients',
-  component: _components_clients__WEBPACK_IMPORTED_MODULE_2__["default"]
+  component: _components_clients__WEBPACK_IMPORTED_MODULE_2__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }];
-var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_3__.createRouter)({
-  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_3__.createWebHistory)(process.env.BASE_URL),
+var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_4__.createRouter)({
+  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_4__.createWebHistory)(process.env.BASE_URL),
   routes: routes
+});
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    if (!_store_index__WEBPACK_IMPORTED_MODULE_3__["default"].getters.isLoggedIn) {
+      next('/');
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
