@@ -29,7 +29,10 @@
                  <button class="btn-add" @click="showModal()">Add Client</button>
               </div>
               <div class="panel-body">
-                  <clientLists v-bind:clients="clients" v-on:editClient="editClient($event)" />
+                  <clientLists 
+                    v-bind:clients="clients"
+                    v-on:editClient="editClient($event)"  
+                    v-on:removeClient="removeClient($event)" />
                </div>
             </div>
          </div>
@@ -205,6 +208,23 @@ export default {
           this.serverErrorMessages = error.response.data.message;
           console.log(error);
           this.add_modal = false;
+        }
+      }
+    },
+    //remove client
+    async removeClient(client) {
+      let confirmation = confirm(
+        "Are you sure you want to remove this client?"
+      );
+      if (confirmation) {
+        try {
+          const response = await this.$store.dispatch("removeClient", client);
+          console.log(response);
+          this.clients.filter(c => c.id !== client.id);
+        } catch (error) {
+          this.severErrors = error.response.data.errors;
+          this.serverErrorMessages = error.response.data.message;
+          console.log(error);
         }
       }
     },

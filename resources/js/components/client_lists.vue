@@ -20,7 +20,7 @@
                 <td class="t-col">{{ client.email }}</td>
                 <td class="t-col">{{ client.status }}</td>
                 <td class="t-col"><button class="edit" @click="editUser(client)">edit</button></td>
-                <td class="t-col"><button class="del">delete</button></td>
+                <td class="t-col"><button class="del" @click="deleteUser(client)">delete</button></td>
               </tr>
           </table>
         </div> 
@@ -34,6 +34,9 @@ export default {
   methods: {
     editUser(client) {
       this.$emit("editClient", client);
+    },
+    deleteUser(client) {
+      this.$emit("removeClient", client);
     }
   }
 };

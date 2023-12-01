@@ -16,6 +16,9 @@ export default {
         addNewClient(state, client) {
             state.clients.unshift(client);
         },
+        removeClient(state, id) {
+            state.clients = state.clients.filter(c => c.id !== id)
+        }
     },
     actions: {
         /**
@@ -107,7 +110,6 @@ export default {
                         status: input.status
                     })
                     .then((response) => {
-                        // commit('updateClient', response.data.client)
                         resolve(response);
                     })
                     .catch((error) => {
@@ -115,6 +117,26 @@ export default {
                     })
             })
 
+        },
+        /**
+         * remove client
+         * @param {*} param0 
+         * @param {*} client 
+         */
+        removeClient({
+            commit
+        }, client) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('access_token');
+            return new Promise((resolve, reject) => {
+                axios.delete('api/client/' + client.id)
+                    .then((response) => {
+                        commit('removeClient', client.id)
+                        resolve(response);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            })
         }
     }
 }
