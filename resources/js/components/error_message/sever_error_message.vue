@@ -15,5 +15,6 @@ export default {
 p {
   font-size: 20px;
   color: #04abc1;
+  text-align:center;
 }
 </style>

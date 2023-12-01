@@ -46,45 +46,36 @@ class ClientController extends Controller
         // check if user is logged in
         if (Auth::check()) {
         // gets values from user input
-            $id_number = $request->input('id_number');
-            $date_of_birth = $request->input('date_of_birth');
-            $first_name = $request->input('first_name');
-            $last_name = $request->input('last_name');
-            $email = $request->input('email');
-            $telephone = $request->input('telephone');
-            $status = $request->input('status');
+            $client = new Client;
+            $client->id_number = $request->input('id_number');
+            $client->uuid = Str::orderedUuid();
+            $client->date_of_birth = $request->input('date_of_birth');
+            $client->first_name = $request->input('first_name');
+            $client->last_name = $request->input('last_name');
+            $client->email = $request->input('email');
+            $client->telephone = $request->input('telephone');
+            $client->status = $request->input('status');
 
-            $date_validate = (new InputValidator())->isUserLegal($date_of_birth);
+            $date_validate = (new InputValidator())->isUserLegal($client->date_of_birth);
             // checks if client is above 18 years
             if ($date_validate < 18 || $date_validate > 100) {
                 return response()->json(['message' => 'a client must be 18 years old and above and less than 100 years old'], 422);
             }
             // checks the length of the id number
-            if (strlen($id_number) !== 13) {
+            if (strlen($client->id_number) !== 13) {
                 return response()->json(['message' => 'the id number must be 13 numbers'], 422);
             }
             // checks the length of the phone number
-            if (strlen($telephone) !== 10) {
+            if (strlen($client->telephone) !== 10) {
                 return response()->json(['message' => 'the telephone must be 10 numbers'], 422);
             }
             // checks if  date of birth correspond with year of id number
-            $isValid = (new InputValidator())->validDateOfBirth($date_of_birth, $id_number);
+            $isValid = (new InputValidator())->validDateOfBirth($client->date_of_birth, $client->id_number);
             if (!$isValid) {
                 return response()->json(['message' => 'the id number does not correspond with the date of birth'], 422);
             }
             // saves data to the database
-            $client = DB::table('clients')->insert([
-                'id_number' => $id_number,
-                'uuid' => Str::orderedUuid(),
-                'date_of_birth' => $date_of_birth,
-                'first_name' => $first_name,
-                'last_name' => $last_name,
-                'email' => $email,
-                'telephone' => $telephone,
-                'status' => $status,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            $client->save();
         } else {
             return response()->json(['message' => 'you are unAuthorized to perform this action'], 401);
         }

@@ -92,7 +92,6 @@ import clientLists from "./client_lists.vue";
 import filterResults from "./filter_results.vue";
 import serverError from "./error_message/sever_error.vue";
 import serverMessage from "./error_message/sever_error_message.vue";
-
 export default {
   name: "clients",
   components: {
@@ -104,6 +103,7 @@ export default {
   data() {
     return {
       add_modal: false,
+      // user input
       input: {
         id_number: "",
         date_of_birth: "",
@@ -113,6 +113,7 @@ export default {
         telephone: "",
         status: ""
       },
+      // input validation
       inputErrors: {
         id_number: undefined,
         date_of_birth: undefined,
@@ -128,7 +129,9 @@ export default {
       searchRes: {},
       // errors
       severErrors: "",
-      serverErrorMessages: ""
+      serverErrorMessages: "",
+      // edit or add
+      edit: false
     };
   },
   computed: {
@@ -157,12 +160,34 @@ export default {
     hideModal() {
       this.add_modal = false;
     },
-    createEditClient(e) {
+    async createEditClient(e) {
       e.preventDefault();
-
       this.inputErrors = this.validateInputErrors(this.input);
       if (Object.keys(this.inputErrors).length) return;
-      alert("submit is clicked");
+      if (this.edit === false) {
+        try {
+          const response = await this.$store.dispatch(
+            "addNewClient",
+            this.input
+          );
+          console.log(response);
+          this.add_modal = false;
+          // clears user inputs
+          this.input.id_number = "";
+          this.input.date_of_birth = "";
+          this.input.first_name = "";
+          this.input.last_name = "";
+          this.input.telephone = "";
+          this.input.email = "";
+        } catch (error) {
+          this.severErrors = error.response.data.errors;
+          this.serverErrorMessages = error.response.data.message;
+          console.log(error);
+          this.add_modal = false;
+        }
+      } else {
+        alert("edit");
+      }
     },
     // validate input entered  by user
     validateInputErrors(input) {

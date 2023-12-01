@@ -19878,6 +19878,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       add_modal: false,
+      // user input
       input: {
         id_number: "",
         date_of_birth: "",
@@ -19887,6 +19888,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         telephone: "",
         status: ""
       },
+      // input validation
       inputErrors: {
         id_number: undefined,
         date_of_birth: undefined,
@@ -19902,7 +19904,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       searchRes: {},
       // errors
       severErrors: "",
-      serverErrorMessages: ""
+      serverErrorMessages: "",
+      // edit or add
+      edit: false
     };
   },
   computed: {
@@ -19950,10 +19954,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.add_modal = false;
     },
     createEditClient: function createEditClient(e) {
-      e.preventDefault();
-      this.inputErrors = this.validateInputErrors(this.input);
-      if (Object.keys(this.inputErrors).length) return;
-      alert("submit is clicked");
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              e.preventDefault();
+              _this2.inputErrors = _this2.validateInputErrors(_this2.input);
+              if (!Object.keys(_this2.inputErrors).length) {
+                _context2.next = 4;
+                break;
+              }
+              return _context2.abrupt("return");
+            case 4:
+              if (!(_this2.edit === false)) {
+                _context2.next = 27;
+                break;
+              }
+              _context2.prev = 5;
+              _context2.next = 8;
+              return _this2.$store.dispatch("addNewClient", _this2.input);
+            case 8:
+              response = _context2.sent;
+              console.log(response);
+              _this2.add_modal = false;
+              // clears user inputs
+              _this2.input.id_number = "";
+              _this2.input.date_of_birth = "";
+              _this2.input.first_name = "";
+              _this2.input.last_name = "";
+              _this2.input.telephone = "";
+              _this2.input.email = "";
+              _context2.next = 25;
+              break;
+            case 19:
+              _context2.prev = 19;
+              _context2.t0 = _context2["catch"](5);
+              _this2.severErrors = _context2.t0.response.data.errors;
+              _this2.serverErrorMessages = _context2.t0.response.data.message;
+              console.log(_context2.t0);
+              _this2.add_modal = false;
+            case 25:
+              _context2.next = 28;
+              break;
+            case 27:
+              alert("edit");
+            case 28:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[5, 19]]);
+      }))();
     },
     // validate input entered  by user
     validateInputErrors: function validateInputErrors(input) {
@@ -19969,33 +20021,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     // search user based on name or surname or email or telephone
     filterClient: function filterClient(e) {
-      var _this2 = this;
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var _this3 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var response;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
             case 0:
               e.preventDefault();
-              _context2.prev = 1;
-              _context2.next = 4;
-              return _this2.$store.dispatch("filterClient", _this2.filter);
+              _context3.prev = 1;
+              _context3.next = 4;
+              return _this3.$store.dispatch("filterClient", _this3.filter);
             case 4:
-              response = _context2.sent;
-              _this2.searchRes = response.data.results;
-              _this2.search = true;
+              response = _context3.sent;
+              _this3.searchRes = response.data.results;
+              _this3.search = true;
               console.log(response);
-              _context2.next = 14;
+              _context3.next = 14;
               break;
             case 10:
-              _context2.prev = 10;
-              _context2.t0 = _context2["catch"](1);
-              _this2.serverErrorMessages = _context2.t0.response.data.message;
-              console.log(_context2.t0);
+              _context3.prev = 10;
+              _context3.t0 = _context3["catch"](1);
+              _this3.serverErrorMessages = _context3.t0.response.data.message;
+              console.log(_context3.t0);
             case 14:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
-        }, _callee2, null, [[1, 10]]);
+        }, _callee3, null, [[1, 10]]);
       }))();
     }
   }
@@ -20290,8 +20342,6 @@ var _hoisted_2 = {
 var _hoisted_3 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     "class": "t-head"
-  }, "client id"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
-    "class": "t-head"
   }, "client id number"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     "class": "t-head"
   }, "first name"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
@@ -20322,14 +20372,11 @@ var _hoisted_8 = {
 var _hoisted_9 = {
   "class": "t-col"
 };
-var _hoisted_10 = {
-  "class": "t-col"
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_2, [_hoisted_3, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.clients, function (client, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
       key: index
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.id_number), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.first_name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.last_name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.telephone), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.email), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.status), 1 /* TEXT */)]);
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.id_number), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.first_name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.last_name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.telephone), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.email), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(client.status), 1 /* TEXT */)]);
   }), 128 /* KEYED_FRAGMENT */))])])]);
 }
 
@@ -21155,6 +21202,9 @@ __webpack_require__.r(__webpack_exports__);
   mutations: {
     getAllClients: function getAllClients(state, clients) {
       state.clients = clients;
+    },
+    addNewClient: function addNewClient(state, client) {
+      state.clients.unshift(client);
     }
   },
   actions: {
@@ -21186,6 +21236,31 @@ __webpack_require__.r(__webpack_exports__);
         axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/client_search', {
           filter: filter
         }).then(function (response) {
+          resolve(response);
+        })["catch"](function (error) {
+          reject(error);
+        });
+      });
+    },
+    /**
+     * adds new client
+     * @param {*} param0 
+     * @param {*} input 
+     */
+    addNewClient: function addNewClient(_ref3, input) {
+      var commit = _ref3.commit;
+      (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults).headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('access_token');
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/client', {
+          id_number: input.id_number,
+          date_of_birth: input.date_of_birth,
+          first_name: input.first_name,
+          last_name: input.last_name,
+          telephone: input.telephone,
+          email: input.email,
+          status: input.status
+        }).then(function (response) {
+          commit('addNewClient', response.data.client);
           resolve(response);
         })["catch"](function (error) {
           reject(error);
@@ -21286,7 +21361,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\np[data-v-111f3460] {\r\n  font-size: 20px;\r\n  color: #04abc1;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\np[data-v-111f3460] {\r\n  font-size: 20px;\r\n  color: #04abc1;\r\n  text-align: center;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -21310,7 +21385,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\np[data-v-fd8221b0] {\r\n  font-size: 20px;\r\n  color: #04abc1;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\np[data-v-fd8221b0] {\r\n  font-size: 20px;\r\n  color: #04abc1;\r\n  text-align:center;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
