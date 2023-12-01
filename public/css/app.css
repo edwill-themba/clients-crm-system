@@ -42,3 +42,7 @@
     list-style: none;
     color: #f1ba50;
 }
+
+#app {
+    height: 100vh;
+}
